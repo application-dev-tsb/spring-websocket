@@ -1,0 +1,7 @@
+version: '3.7'
+services:
+
+  rabbitmq:
+    image: rabbitmq-stomp:latest
+    ports:
+      - 61613:61613

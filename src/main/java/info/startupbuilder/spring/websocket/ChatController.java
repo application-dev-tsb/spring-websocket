@@ -1,8 +1,10 @@
 package info.startupbuilder.spring.websocket;
 
 import lombok.Data;
+import lombok.RequiredArgsConstructor;
 import lombok.Value;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.SendTo;
 import org.springframework.stereotype.Controller;
@@ -10,9 +12,12 @@ import org.springframework.stereotype.Controller;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
+@RequiredArgsConstructor
 @Slf4j
 @Controller
 public class ChatController {
+
+    private final StringRedisTemplate redis;
 
     @Data
     public static class Message {
@@ -32,10 +37,13 @@ public class ChatController {
     public MessageReceipt send(Message message) {
         log.info("Message Received: {}", message);
 
+        redis.convertAndSend("test", message.text);
+
         return new MessageReceipt(
                 UUID.randomUUID().toString(),
                 LocalDateTime.now(),
                 message
         );
     }
+
 }
